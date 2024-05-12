@@ -91,4 +91,6 @@ void PhysicsList::ConstructProcess() {
 
     G4PhysicsListHelper *ph = G4PhysicsListHelper::GetPhysicsListHelper();
     ph->RegisterProcess(radioactiveDecay, G4GenericIon::GenericIon());
+
+    G4VModularPhysicsList::ConstructProcess();
 }

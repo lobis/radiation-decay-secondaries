@@ -39,6 +39,8 @@ void TrackingAction::PreUserTrackingAction(const G4Track *track) {
         return;
     }
 
+
+    return;
     // print track info
     G4String particleName = particle->GetParticleName();
     G4String volumeName = track->GetVolume()->GetName();
@@ -50,6 +52,7 @@ void TrackingAction::PreUserTrackingAction(const G4Track *track) {
     G4ThreeVector position = track->GetPosition() / mm;
     const G4ThreeVector &momentum = track->GetMomentumDirection();
 
+    auto positionOrigin = track->GetVertexPosition();
     G4cout << "TrackingAction::PreUserTrackingAction: "
            << "particle=" << particleName << " "
            << "volume=" << volumeName << " "
@@ -58,7 +61,8 @@ void TrackingAction::PreUserTrackingAction(const G4Track *track) {
            << "globalTime=" << G4BestUnit(globalTime, "Time") << " "
            << "kineticEnergy=" << G4BestUnit(kineticEnergy, "Energy") << " "
            << "position=" << position << " "
-           << "momentum=" << momentum << endl;
+           << "momentum=" << momentum << " " << endl;
+
 }
 
 void TrackingAction::PostUserTrackingAction(const G4Track *track) {}
