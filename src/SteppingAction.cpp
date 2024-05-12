@@ -11,6 +11,7 @@ using namespace std;
 SteppingAction::SteppingAction() : G4UserSteppingAction() {}
 
 void SteppingAction::UserSteppingAction(const G4Step *step) {
+    return;
     // print step info
     G4StepPoint *preStepPoint = step->GetPreStepPoint();
     G4StepPoint *postStepPoint = step->GetPostStepPoint();

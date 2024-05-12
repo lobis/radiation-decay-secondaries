@@ -12,6 +12,15 @@ SensitiveDetector::SensitiveDetector(const string &name) : G4VSensitiveDetector(
 G4bool SensitiveDetector::ProcessHits(G4Step *step, G4TouchableHistory *) {
 
     auto track = step->GetTrack();
+    G4cout << "SensitiveDetector::ProcessHits: "
+           << "particle=" << track->GetParticleDefinition()->GetParticleName() << " "
+           << "volume=" << step->GetPreStepPoint()->GetPhysicalVolume()->GetName() << " "
+           << "stepLength=" << step->GetStepLength() << " "
+           << "energyDeposit=" << step->GetTotalEnergyDeposit() << " "
+           << "globalTime=" << track->GetGlobalTime() << " "
+           << "kineticEnergy=" << track->GetKineticEnergy() << " "
+           << "position=" << step->GetPreStepPoint()->GetPosition() << " "
+           << "momentum=" << track->GetMomentumDirection() << endl;
 
     RunAction::InsertTrack(track);
 
