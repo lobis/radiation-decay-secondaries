@@ -73,7 +73,7 @@ void PhysicsList::ConstructProcess() {
 
     G4RadioactiveDecay *radioactiveDecay = new G4RadioactiveDecay();
 
-    radioactiveDecay->SetThresholdForVeryLongDecayTime(pow(10,12) * CLHEP::hour);
+    radioactiveDecay->SetThresholdForVeryLongDecayTime(pow(10,12) * CLHEP::year);
 
     G4bool ARMflag = false;
     radioactiveDecay->SetARM(ARMflag);        //Atomic Rearangement
