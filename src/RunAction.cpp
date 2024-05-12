@@ -1,5 +1,6 @@
 
 #include "RunAction.h"
+#include "DetectorConstruction.h"
 
 #include <iostream>
 #include <TMath.h>
@@ -70,51 +71,51 @@ void RunAction::BeginOfRunAction(const G4Run *) {
         electronsMinusEnergy = new TH1D("electron_minus_energy", "Electron (e-) Kinetic Energy (MeV)", binsEnergyN,
                                         binsEnergy);
         electronsMinusEnergy->GetXaxis()->SetTitle("Energy (MeV)");
-        electronsMinusEnergy->GetYaxis()->SetTitle("Counts / Bq");
+        electronsMinusEnergy->GetYaxis()->SetTitle("Counts / Bq / cm");
 
         electronsPlusEnergy = new TH1D("electron_plus_energy", "Electron (e+) Kinetic Energy (MeV)", binsEnergyN,
                                        binsEnergy);
         electronsPlusEnergy->GetXaxis()->SetTitle("Energy (MeV)");
-        electronsPlusEnergy->GetYaxis()->SetTitle("Counts / Bq");
+        electronsPlusEnergy->GetYaxis()->SetTitle("Counts / Bq / cm");
 
         gammasEnergy = new TH1D("gamma_energy", "Gamma Kinetic Energy (MeV)", binsEnergyN, binsEnergy);
         gammasEnergy->GetXaxis()->SetTitle("Energy (MeV)");
-        gammasEnergy->GetYaxis()->SetTitle("Counts / Bq");
+        gammasEnergy->GetYaxis()->SetTitle("Counts / Bq / cm");
 
         alphasEnergy = new TH1D("alpha_energy", "Alpha Kinetic Energy (MeV)", binsEnergyN, binsEnergy);
         alphasEnergy->GetXaxis()->SetTitle("Energy (MeV)");
-        alphasEnergy->GetYaxis()->SetTitle("Counts / Bq");
+        alphasEnergy->GetYaxis()->SetTitle("Counts / Bq / cm");
 
         neutronsEnergy = new TH1D("neutron_energy", "Neutron Kinetic Energy (MeV)", binsEnergyN, binsEnergy);
         neutronsEnergy->GetXaxis()->SetTitle("Energy (MeV)");
-        neutronsEnergy->GetYaxis()->SetTitle("Counts / Bq");
+        neutronsEnergy->GetYaxis()->SetTitle("Counts / Bq / cm");
 
         electronsMinusZenith = new TH1D("electron_minus_zenith", "Electron (e-) Zenith Angle (degrees)", binsZenithN,
                                         binsZenithMin,
                                         binsZenithMax);
         electronsMinusZenith->GetXaxis()->SetTitle("Zenith Angle (degrees)");
-        electronsMinusZenith->GetYaxis()->SetTitle("Counts / Bq");
+        electronsMinusZenith->GetYaxis()->SetTitle("Counts / Bq / cm");
 
         electronsPlusZenith = new TH1D("electron_plus_zenith", "Electron (e+) Zenith Angle (degrees)", binsZenithN,
                                        binsZenithMin,
                                        binsZenithMax);
         electronsPlusZenith->GetXaxis()->SetTitle("Zenith Angle (degrees)");
-        electronsPlusZenith->GetYaxis()->SetTitle("Counts / Bq");
+        electronsPlusZenith->GetYaxis()->SetTitle("Counts / Bq / cm");
 
         gammasZenith = new TH1D("gamma_zenith", "Gamma Zenith Angle (degrees)", binsZenithN, binsZenithMin,
                                 binsZenithMax);
         gammasZenith->GetXaxis()->SetTitle("Zenith Angle (degrees)");
-        gammasZenith->GetYaxis()->SetTitle("Counts / Bq");
+        gammasZenith->GetYaxis()->SetTitle("Counts / Bq / cm");
 
         alphasZenith = new TH1D("alpha_zenith", "Alpha Zenith Angle (degrees)", binsZenithN, binsZenithMin,
                                 binsZenithMax);
         alphasZenith->GetXaxis()->SetTitle("Zenith Angle (degrees)");
-        alphasZenith->GetYaxis()->SetTitle("Counts / Bq");
+        alphasZenith->GetYaxis()->SetTitle("Counts / Bq / cm");
 
         neutronsZenith = new TH1D("neutron_zenith", "Neutron Zenith Angle (degrees)", binsZenithN, binsZenithMin,
                                   binsZenithMax);
         neutronsZenith->GetXaxis()->SetTitle("Zenith Angle (degrees)");
-        neutronsZenith->GetYaxis()->SetTitle("Counts / Bq");
+        neutronsZenith->GetYaxis()->SetTitle("Counts / Bq / cm");
 
         electronsMinusEnergyZenith = new TH2D("electron_minus_energy_zenith",
                                               "Electron (e-) Kinetic Energy (MeV) vs Zenith Angle (degrees)",
@@ -122,7 +123,7 @@ void RunAction::BeginOfRunAction(const G4Run *) {
                                               binsEnergy, binsZenithN, binsZenithMin, binsZenithMax);
         electronsMinusEnergyZenith->GetXaxis()->SetTitle("Energy (MeV)");
         electronsMinusEnergyZenith->GetYaxis()->SetTitle("Zenith Angle (degrees)");
-        electronsMinusEnergyZenith->GetZaxis()->SetTitle("Counts / Bq");
+        electronsMinusEnergyZenith->GetZaxis()->SetTitle("Counts / Bq / cm");
 
         electronsPlusEnergyZenith = new TH2D("electron_plus_energy_zenith",
                                              "Electron (e+) Kinetic Energy (MeV) vs Zenith Angle (degrees)",
@@ -130,7 +131,7 @@ void RunAction::BeginOfRunAction(const G4Run *) {
                                              binsEnergy, binsZenithN, binsZenithMin, binsZenithMax);
         electronsPlusEnergyZenith->GetXaxis()->SetTitle("Energy (MeV)");
         electronsPlusEnergyZenith->GetYaxis()->SetTitle("Zenith Angle (degrees)");
-        electronsPlusEnergyZenith->GetZaxis()->SetTitle("Counts / Bq");
+        electronsPlusEnergyZenith->GetZaxis()->SetTitle("Counts / Bq / cm");
 
         gammasEnergyZenith = new TH2D("gamma_energy_zenith", "Gamma Kinetic Energy (MeV) vs Zenith Angle (degrees)",
                                       binsEnergyN,
@@ -138,7 +139,7 @@ void RunAction::BeginOfRunAction(const G4Run *) {
                                       binsZenithN, binsZenithMin, binsZenithMax);
         gammasEnergyZenith->GetXaxis()->SetTitle("Energy (MeV)");
         gammasEnergyZenith->GetYaxis()->SetTitle("Zenith Angle (degrees)");
-        gammasEnergyZenith->GetZaxis()->SetTitle("Counts / Bq");
+        gammasEnergyZenith->GetZaxis()->SetTitle("Counts / Bq / cm");
 
         alphasEnergyZenith = new TH2D("alpha_energy_zenith", "Alpha Kinetic Energy (MeV) vs Zenith Angle (degrees)",
                                       binsEnergyN,
@@ -146,14 +147,14 @@ void RunAction::BeginOfRunAction(const G4Run *) {
                                       binsZenithN, binsZenithMin, binsZenithMax);
         alphasEnergyZenith->GetXaxis()->SetTitle("Energy (MeV)");
         alphasEnergyZenith->GetYaxis()->SetTitle("Zenith Angle (degrees)");
-        alphasEnergyZenith->GetZaxis()->SetTitle("Counts / Bq");
+        alphasEnergyZenith->GetZaxis()->SetTitle("Counts / Bq / cm");
 
         neutronsEnergyZenith = new TH2D("neutron_energy_zenith",
                                         "Neutron Kinetic Energy (MeV) vs Zenith Angle (degrees)", binsEnergyN,
                                         binsEnergy, binsZenithN, binsZenithMin, binsZenithMax);
         neutronsEnergyZenith->GetXaxis()->SetTitle("Energy (MeV)");
         neutronsEnergyZenith->GetYaxis()->SetTitle("Zenith Angle (degrees)");
-        neutronsEnergyZenith->GetZaxis()->SetTitle("Counts / Bq");
+        neutronsEnergyZenith->GetZaxis()->SetTitle("Counts / Bq / cm");
     }
 }
 
@@ -163,8 +164,9 @@ void RunAction::EndOfRunAction(const G4Run *) {
     lock_guard<std::mutex> lockInput(inputMutex);
     lock_guard<std::mutex> lockOutput(outputMutex);
 
-    unsigned int launchedParticles = GetLaunchedPrimaries(false);
-    const auto scale = 1.0 / launchedParticles;
+    const auto launchedParticles = GetLaunchedPrimaries(false);
+    const auto detectorThickness = DetectorConstruction::GetThickness() * 0.1; // in cm
+    const auto scale = 1.0 / launchedParticles / detectorThickness;
 
     electronsMinusEnergy->Scale(scale);
     electronsPlusEnergy->Scale(scale);
