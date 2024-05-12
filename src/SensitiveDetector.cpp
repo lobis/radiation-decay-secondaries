@@ -12,6 +12,8 @@ SensitiveDetector::SensitiveDetector(const string &name) : G4VSensitiveDetector(
 G4bool SensitiveDetector::ProcessHits(G4Step *step, G4TouchableHistory *) {
 
     auto track = step->GetTrack();
+
+    /*
     const auto positionOrigin = track->GetVertexPosition();
 
     G4cout << "SensitiveDetector::ProcessHits: "
@@ -23,7 +25,7 @@ G4bool SensitiveDetector::ProcessHits(G4Step *step, G4TouchableHistory *) {
            << "position=" << step->GetPreStepPoint()->GetPosition() << " "
            << "momentum=" << track->GetMomentumDirection() << " "
            << "positionOrigin=" << positionOrigin << endl;
-
+    */
 
     RunAction::InsertTrack(track);
 

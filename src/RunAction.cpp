@@ -21,25 +21,24 @@ mutex RunAction::outputMutex;
 string RunAction::inputParticleName;
 string RunAction::outputFilename;
 
-TFile *RunAction::inputFile = nullptr;
 TFile *RunAction::outputFile = nullptr;
 
-TH1D *RunAction::muonsEnergy = nullptr;
-TH1D *RunAction::electronsEnergy = nullptr;
+TH1D *RunAction::electronsMinusEnergy = nullptr;
+TH1D *RunAction::electronsPlusEnergy = nullptr;
 TH1D *RunAction::gammasEnergy = nullptr;
-TH1D *RunAction::protonsEnergy = nullptr;
+TH1D *RunAction::alphasEnergy = nullptr;
 TH1D *RunAction::neutronsEnergy = nullptr;
 
-TH1D *RunAction::muonsZenith = nullptr;
-TH1D *RunAction::electronsZenith = nullptr;
+TH1D *RunAction::electronsMinusZenith = nullptr;
+TH1D *RunAction::electronsPlusZenith = nullptr;
 TH1D *RunAction::gammasZenith = nullptr;
-TH1D *RunAction::protonsZenith = nullptr;
+TH1D *RunAction::alphasZenith = nullptr;
 TH1D *RunAction::neutronsZenith = nullptr;
 
-TH2D *RunAction::muonsEnergyZenith = nullptr;
-TH2D *RunAction::electronsEnergyZenith = nullptr;
+TH2D *RunAction::electronsMinusEnergyZenith = nullptr;
+TH2D *RunAction::electronsPlusEnergyZenith = nullptr;
 TH2D *RunAction::gammasEnergyZenith = nullptr;
-TH2D *RunAction::protonsEnergyZenith = nullptr;
+TH2D *RunAction::alphasEnergyZenith = nullptr;
 TH2D *RunAction::neutronsEnergyZenith = nullptr;
 
 RunAction::RunAction() : G4UserRunAction() {}
@@ -48,9 +47,16 @@ void RunAction::BeginOfRunAction(const G4Run *) {
     lock_guard<std::mutex> lock(mutex);
 
     if (IsMaster()) {
-        const unsigned int binsEnergyN = 200;
-        const double binsEnergyMin = 1E-9;
-        const double binsEnergyMax = 1E8;
+        if (outputFile != nullptr) {
+            outputFile->Close();
+            delete outputFile;
+        }
+
+        outputFile = new TFile(outputFilename.c_str(), "RECREATE");
+
+        const unsigned int binsEnergyN = 5000;
+        const double binsEnergyMin = 1E-4;
+        const double binsEnergyMax = 1E2;
         double binsEnergy[binsEnergyN + 1];
         for (int i = 0; i <= binsEnergyN; ++i) {
             binsEnergy[i] = TMath::Power(10, (TMath::Log10(binsEnergyMin) +
@@ -61,65 +67,70 @@ void RunAction::BeginOfRunAction(const G4Run *) {
         const double binsZenithMin = 0;
         const double binsZenithMax = 90;
 
-        muonsEnergy = new TH1D("muon_energy", "Muon Kinetic Energy (MeV)", binsEnergyN, binsEnergy);
-        muonsEnergy->GetXaxis()->SetTitle("Energy (MeV)");
-        muonsEnergy->GetYaxis()->SetTitle("Counts / s / m2");
+        electronsMinusEnergy = new TH1D("electron_minus_energy", "Electron (e-) Kinetic Energy (MeV)", binsEnergyN,
+                                        binsEnergy);
+        electronsMinusEnergy->GetXaxis()->SetTitle("Energy (MeV)");
+        electronsMinusEnergy->GetYaxis()->SetTitle("Counts / Bq");
 
-        electronsEnergy = new TH1D("electron_energy", "Electron Kinetic Energy (MeV)", binsEnergyN, binsEnergy);
-        electronsEnergy->GetXaxis()->SetTitle("Energy (MeV)");
-        electronsEnergy->GetYaxis()->SetTitle("Counts / s / m2");
+        electronsPlusEnergy = new TH1D("electron_plus_energy", "Electron (e+) Kinetic Energy (MeV)", binsEnergyN,
+                                       binsEnergy);
+        electronsPlusEnergy->GetXaxis()->SetTitle("Energy (MeV)");
+        electronsPlusEnergy->GetYaxis()->SetTitle("Counts / Bq");
 
         gammasEnergy = new TH1D("gamma_energy", "Gamma Kinetic Energy (MeV)", binsEnergyN, binsEnergy);
         gammasEnergy->GetXaxis()->SetTitle("Energy (MeV)");
-        gammasEnergy->GetYaxis()->SetTitle("Counts / s / m2");
+        gammasEnergy->GetYaxis()->SetTitle("Counts / Bq");
 
-        protonsEnergy = new TH1D("proton_energy", "Proton Kinetic Energy (MeV)", binsEnergyN, binsEnergy);
-        protonsEnergy->GetXaxis()->SetTitle("Energy (MeV)");
-        protonsEnergy->GetYaxis()->SetTitle("Counts / s / m2");
+        alphasEnergy = new TH1D("alpha_energy", "Alpha Kinetic Energy (MeV)", binsEnergyN, binsEnergy);
+        alphasEnergy->GetXaxis()->SetTitle("Energy (MeV)");
+        alphasEnergy->GetYaxis()->SetTitle("Counts / Bq");
 
         neutronsEnergy = new TH1D("neutron_energy", "Neutron Kinetic Energy (MeV)", binsEnergyN, binsEnergy);
         neutronsEnergy->GetXaxis()->SetTitle("Energy (MeV)");
-        neutronsEnergy->GetYaxis()->SetTitle("Counts / s / m2");
+        neutronsEnergy->GetYaxis()->SetTitle("Counts / Bq");
 
-        muonsZenith = new TH1D("muon_zenith", "Muon Zenith Angle (degrees)", binsZenithN, binsZenithMin, binsZenithMax);
-        muonsZenith->GetXaxis()->SetTitle("Zenith Angle (degrees)");
-        muonsZenith->GetYaxis()->SetTitle("Counts / s / m2");
+        electronsMinusZenith = new TH1D("electron_minus_zenith", "Electron (e-) Zenith Angle (degrees)", binsZenithN,
+                                        binsZenithMin,
+                                        binsZenithMax);
+        electronsMinusZenith->GetXaxis()->SetTitle("Zenith Angle (degrees)");
+        electronsMinusZenith->GetYaxis()->SetTitle("Counts / Bq");
 
-        electronsZenith = new TH1D("electron_zenith", "Electron Zenith Angle (degrees)", binsZenithN, binsZenithMin,
-                                   binsZenithMax);
-        electronsZenith->GetXaxis()->SetTitle("Zenith Angle (degrees)");
-        electronsZenith->GetYaxis()->SetTitle("Counts / s / m2");
+        electronsPlusZenith = new TH1D("electron_plus_zenith", "Electron (e+) Zenith Angle (degrees)", binsZenithN,
+                                       binsZenithMin,
+                                       binsZenithMax);
+        electronsPlusZenith->GetXaxis()->SetTitle("Zenith Angle (degrees)");
+        electronsPlusZenith->GetYaxis()->SetTitle("Counts / Bq");
 
         gammasZenith = new TH1D("gamma_zenith", "Gamma Zenith Angle (degrees)", binsZenithN, binsZenithMin,
                                 binsZenithMax);
         gammasZenith->GetXaxis()->SetTitle("Zenith Angle (degrees)");
-        gammasZenith->GetYaxis()->SetTitle("Counts / s / m2");
+        gammasZenith->GetYaxis()->SetTitle("Counts / Bq");
 
-        protonsZenith = new TH1D("proton_zenith", "Proton Zenith Angle (degrees)", binsZenithN, binsZenithMin,
-                                 binsZenithMax);
-        protonsZenith->GetXaxis()->SetTitle("Zenith Angle (degrees)");
-        protonsZenith->GetYaxis()->SetTitle("Counts / s / m2");
+        alphasZenith = new TH1D("alpha_zenith", "Alpha Zenith Angle (degrees)", binsZenithN, binsZenithMin,
+                                binsZenithMax);
+        alphasZenith->GetXaxis()->SetTitle("Zenith Angle (degrees)");
+        alphasZenith->GetYaxis()->SetTitle("Counts / Bq");
 
         neutronsZenith = new TH1D("neutron_zenith", "Neutron Zenith Angle (degrees)", binsZenithN, binsZenithMin,
                                   binsZenithMax);
         neutronsZenith->GetXaxis()->SetTitle("Zenith Angle (degrees)");
-        neutronsZenith->GetYaxis()->SetTitle("Counts / s / m2");
+        neutronsZenith->GetYaxis()->SetTitle("Counts / Bq");
 
-        muonsEnergyZenith = new TH2D("muon_energy_zenith", "Muon Kinetic Energy (MeV) vs Zenith Angle (degrees)",
-                                     binsEnergyN,
-                                     binsEnergy,
-                                     binsZenithN, binsZenithMin, binsZenithMax);
-        muonsEnergyZenith->GetXaxis()->SetTitle("Energy (MeV)");
-        muonsEnergyZenith->GetYaxis()->SetTitle("Zenith Angle (degrees)");
-        muonsEnergyZenith->GetZaxis()->SetTitle("Counts / s / m2");
+        electronsMinusEnergyZenith = new TH2D("electron_minus_energy_zenith",
+                                              "Electron (e-) Kinetic Energy (MeV) vs Zenith Angle (degrees)",
+                                              binsEnergyN,
+                                              binsEnergy, binsZenithN, binsZenithMin, binsZenithMax);
+        electronsMinusEnergyZenith->GetXaxis()->SetTitle("Energy (MeV)");
+        electronsMinusEnergyZenith->GetYaxis()->SetTitle("Zenith Angle (degrees)");
+        electronsMinusEnergyZenith->GetZaxis()->SetTitle("Counts / Bq");
 
-        electronsEnergyZenith = new TH2D("electron_energy_zenith",
-                                         "Electron Kinetic Energy (MeV) vs Zenith Angle (degrees)",
-                                         binsEnergyN,
-                                         binsEnergy, binsZenithN, binsZenithMin, binsZenithMax);
-        electronsEnergyZenith->GetXaxis()->SetTitle("Energy (MeV)");
-        electronsEnergyZenith->GetYaxis()->SetTitle("Zenith Angle (degrees)");
-        electronsEnergyZenith->GetZaxis()->SetTitle("Counts / s / m2");
+        electronsPlusEnergyZenith = new TH2D("electron_plus_energy_zenith",
+                                             "Electron (e+) Kinetic Energy (MeV) vs Zenith Angle (degrees)",
+                                             binsEnergyN,
+                                             binsEnergy, binsZenithN, binsZenithMin, binsZenithMax);
+        electronsPlusEnergyZenith->GetXaxis()->SetTitle("Energy (MeV)");
+        electronsPlusEnergyZenith->GetYaxis()->SetTitle("Zenith Angle (degrees)");
+        electronsPlusEnergyZenith->GetZaxis()->SetTitle("Counts / Bq");
 
         gammasEnergyZenith = new TH2D("gamma_energy_zenith", "Gamma Kinetic Energy (MeV) vs Zenith Angle (degrees)",
                                       binsEnergyN,
@@ -127,21 +138,22 @@ void RunAction::BeginOfRunAction(const G4Run *) {
                                       binsZenithN, binsZenithMin, binsZenithMax);
         gammasEnergyZenith->GetXaxis()->SetTitle("Energy (MeV)");
         gammasEnergyZenith->GetYaxis()->SetTitle("Zenith Angle (degrees)");
-        gammasEnergyZenith->GetZaxis()->SetTitle("Counts / s / m2");
+        gammasEnergyZenith->GetZaxis()->SetTitle("Counts / Bq");
 
-        protonsEnergyZenith = new TH2D("proton_energy_zenith", "Proton Kinetic Energy (MeV) vs Zenith Angle (degrees)",
-                                       binsEnergyN,
-                                       binsEnergy, binsZenithN, binsZenithMin, binsZenithMax);
-        protonsEnergyZenith->GetXaxis()->SetTitle("Energy (MeV)");
-        protonsEnergyZenith->GetYaxis()->SetTitle("Zenith Angle (degrees)");
-        protonsEnergyZenith->GetZaxis()->SetTitle("Counts / s / m2");
+        alphasEnergyZenith = new TH2D("alpha_energy_zenith", "Alpha Kinetic Energy (MeV) vs Zenith Angle (degrees)",
+                                      binsEnergyN,
+                                      binsEnergy,
+                                      binsZenithN, binsZenithMin, binsZenithMax);
+        alphasEnergyZenith->GetXaxis()->SetTitle("Energy (MeV)");
+        alphasEnergyZenith->GetYaxis()->SetTitle("Zenith Angle (degrees)");
+        alphasEnergyZenith->GetZaxis()->SetTitle("Counts / Bq");
 
         neutronsEnergyZenith = new TH2D("neutron_energy_zenith",
                                         "Neutron Kinetic Energy (MeV) vs Zenith Angle (degrees)", binsEnergyN,
                                         binsEnergy, binsZenithN, binsZenithMin, binsZenithMax);
         neutronsEnergyZenith->GetXaxis()->SetTitle("Energy (MeV)");
         neutronsEnergyZenith->GetYaxis()->SetTitle("Zenith Angle (degrees)");
-        neutronsEnergyZenith->GetZaxis()->SetTitle("Counts / s / m2");
+        neutronsEnergyZenith->GetZaxis()->SetTitle("Counts / Bq");
     }
 }
 
@@ -150,6 +162,34 @@ void RunAction::EndOfRunAction(const G4Run *) {
 
     lock_guard<std::mutex> lockInput(inputMutex);
     lock_guard<std::mutex> lockOutput(outputMutex);
+
+    unsigned int launchedParticles = GetLaunchedPrimaries(false);
+    const auto scale = 1.0 / launchedParticles;
+
+    electronsMinusEnergy->Scale(scale);
+    electronsPlusEnergy->Scale(scale);
+    gammasEnergy->Scale(scale);
+    alphasEnergy->Scale(scale);
+    neutronsEnergy->Scale(scale);
+
+    electronsMinusZenith->Scale(scale);
+    electronsPlusZenith->Scale(scale);
+    gammasZenith->Scale(scale);
+    alphasZenith->Scale(scale);
+    neutronsZenith->Scale(scale);
+
+    electronsMinusEnergyZenith->Scale(scale);
+    electronsPlusEnergyZenith->Scale(scale);
+    gammasEnergyZenith->Scale(scale);
+    alphasEnergyZenith->Scale(scale);
+    neutronsEnergyZenith->Scale(scale);
+
+    if (outputFile != nullptr) {
+        outputFile->Write();
+        outputFile->Close();
+        delete outputFile;
+        outputFile = nullptr;
+    }
 }
 
 void RunAction::InsertTrack(const G4Track *track) {
@@ -162,27 +202,29 @@ void RunAction::InsertTrack(const G4Track *track) {
     G4double zenith =
             TMath::ACos(track->GetMomentumDirection().z()) * TMath::RadToDeg();
 
-    if (particleName == "mu-" || particleName == "mu+") {
-        muonsEnergy->Fill(kineticEnergy);
-        muonsZenith->Fill(zenith);
-        muonsEnergyZenith->Fill(kineticEnergy, zenith);
-    } else if (particleName == "e-" || particleName == "e+") {
-        electronsEnergy->Fill(kineticEnergy);
-        electronsZenith->Fill(zenith);
-        electronsEnergyZenith->Fill(kineticEnergy, zenith);
+
+    if (particleName == "e-") {
+        electronsMinusEnergy->Fill(kineticEnergy);
+        electronsMinusZenith->Fill(zenith);
+        electronsMinusEnergyZenith->Fill(kineticEnergy, zenith);
+    } else if (particleName == "e+") {
+        electronsPlusEnergy->Fill(kineticEnergy);
+        electronsPlusZenith->Fill(zenith);
+        electronsPlusEnergyZenith->Fill(kineticEnergy, zenith);
     } else if (particleName == "gamma") {
         gammasEnergy->Fill(kineticEnergy);
         gammasZenith->Fill(zenith);
         gammasEnergyZenith->Fill(kineticEnergy, zenith);
-    } else if (particleName == "proton") {
-        protonsEnergy->Fill(kineticEnergy);
-        protonsZenith->Fill(zenith);
-        protonsEnergyZenith->Fill(kineticEnergy, zenith);
     } else if (particleName == "neutron") {
         neutronsEnergy->Fill(kineticEnergy);
         neutronsZenith->Fill(zenith);
         neutronsEnergyZenith->Fill(kineticEnergy, zenith);
+    } else if (particleName == "alpha") {
+        alphasEnergy->Fill(kineticEnergy);
+        alphasZenith->Fill(zenith);
+        alphasEnergyZenith->Fill(kineticEnergy, zenith);
     } else {
+        G4cout << "Unknown particle: " << particleName << G4endl;
         return;
     }
 
@@ -216,16 +258,17 @@ int RunAction::GetRequestedSecondaries() {
 }
 
 unsigned long long RunAction::GetSecondariesCount(bool lock) {
-    if (muonsEnergyZenith == nullptr || electronsEnergyZenith == nullptr || gammasEnergyZenith == nullptr ||
-        protonsEnergyZenith == nullptr || neutronsEnergyZenith == nullptr) {
+    if (electronsMinusEnergyZenith == nullptr || electronsPlusEnergyZenith == nullptr ||
+        gammasEnergyZenith == nullptr || alphasEnergyZenith == nullptr ||
+        neutronsEnergyZenith == nullptr) {
         return 0;
     }
 
     if (lock) {
         outputMutex.lock();
     }
-    auto count = muonsEnergyZenith->GetEntries() + electronsEnergyZenith->GetEntries() +
-                 gammasEnergyZenith->GetEntries() + protonsEnergyZenith->GetEntries() +
+    auto count = electronsMinusEnergyZenith->GetEntries() + electronsPlusEnergyZenith->GetEntries() +
+                 gammasEnergyZenith->GetEntries() + alphasEnergyZenith->GetEntries() +
                  neutronsEnergyZenith->GetEntries();
     if (lock) {
         outputMutex.unlock();

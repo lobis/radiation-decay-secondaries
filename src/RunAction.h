@@ -51,25 +51,24 @@ private:
     static std::mutex outputMutex;
 
     static std::string inputParticleName;
-    static TFile *inputFile;
     static TFile *outputFile;
 
-    static TH1D *muonsEnergy;
-    static TH1D *electronsEnergy;
+    static TH1D *electronsMinusEnergy;
+    static TH1D *electronsPlusEnergy;
     static TH1D *gammasEnergy;
-    static TH1D *protonsEnergy;
+    static TH1D *alphasEnergy;
     static TH1D *neutronsEnergy;
 
-    static TH1D *muonsZenith;
-    static TH1D *electronsZenith;
+    static TH1D *electronsMinusZenith;
+    static TH1D *electronsPlusZenith;
     static TH1D *gammasZenith;
-    static TH1D *protonsZenith;
+    static TH1D *alphasZenith;
     static TH1D *neutronsZenith;
 
-    static TH2D *muonsEnergyZenith;
-    static TH2D *electronsEnergyZenith;
+    static TH2D *electronsMinusEnergyZenith;
+    static TH2D *electronsPlusEnergyZenith;
     static TH2D *gammasEnergyZenith;
-    static TH2D *protonsEnergyZenith;
+    static TH2D *alphasEnergyZenith;
     static TH2D *neutronsEnergyZenith;
 };
 
