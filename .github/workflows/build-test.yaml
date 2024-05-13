@@ -19,13 +19,13 @@ jobs:
         uses: conda-incubator/setup-miniconda@v3
         with:
           auto-update-conda: true
-          python-version: "3.12"
+          python-version: "3.8"
           miniforge-variant: Mambaforge
           use-mamba: true
 
       - name: Install dependencies
         run: |
-          mamba install cmake root geant4
+          mamba install root
 
       - name: Build
         run: |
