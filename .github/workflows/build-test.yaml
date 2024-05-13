@@ -25,7 +25,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          mamba install root
+          mamba install root geant4
 
       - name: Build
         run: |
