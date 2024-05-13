@@ -23,9 +23,13 @@ jobs:
           miniforge-variant: Mambaforge
           use-mamba: true
 
-      - name: Install dependencies
+      - name: Install ROOT
         run: |
-          mamba install root geant4
+          mamba install root
+
+      - name: Install Geant4
+        run: |
+          mamba install geant4
 
       - name: Build
         run: |
