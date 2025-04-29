@@ -1,0 +1,34 @@
+name: Build and Test
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Anaconda
+        uses: conda-incubator/setup-miniconda@v3
+        with:
+          auto-update-conda: true
+          python-version: "3.8"
+          miniforge-variant: Mambaforge
+          use-mamba: true
+
+      - name: Install ROOT
+        run: |
+          mamba install root
+
+      - name: Install Geant4
+        run: |
+          mamba install geant4
+
+      - name: Build
+        run: |
+          mkdir build
+          cd build
+          cmake ..
+          make
