@@ -8,6 +8,7 @@
 #include <G4RunManager.hh>
 #include <G4VUserPrimaryGeneratorAction.hh>
 #include <G4IonTable.hh>
+#include <G4UnitsTable.hh>
 
 using namespace std;
 using namespace CLHEP;
@@ -19,9 +20,12 @@ PrimaryGeneratorAction::PrimaryGeneratorAction() : G4VUserPrimaryGeneratorAction
 }
 
 void PrimaryGeneratorAction::GeneratePrimaries(G4Event *event) {
-    const double z = G4UniformRand() * DetectorConstruction::GetThickness();
+    const auto maxDepth = DetectorConstruction::GetThickness();
+    const double z = G4UniformRand() * maxDepth;
 
     gun.SetParticlePosition({0.0, 0.0, z});
+
+    RunAction::SetDepth(maxDepth - z);
 
     if (!foundPrimaryParticle) {
         gun.SetParticleDefinition(FindPrimaryParticle());

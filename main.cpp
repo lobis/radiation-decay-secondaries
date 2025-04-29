@@ -63,7 +63,7 @@ int main(int argc, char **argv) {
 
     app.add_option("-n,--primaries", nEvents, "Number of primary particles to launch")->check(
             CLI::PositiveNumber);
-    app.add_option("-s,--secondaries", nSecondariesLimit, "Number of secondaries to limit the simulation to")->check(
+    app.add_option("-s,--secondaries", nSecondariesLimit, "Stop the simulation once this number of entries is reached")->check(
             CLI::PositiveNumber);
     app.add_option("-t,--threads", nThreads, "Number of threads. t=0 means no multithreading (default)")->check(
             CLI::NonNegativeNumber);

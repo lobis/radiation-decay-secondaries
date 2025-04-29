@@ -57,8 +57,7 @@ PhysicsList::PhysicsList() : G4VModularPhysicsList() {
 
     RegisterPhysics(new G4DecayPhysics());
     RegisterPhysics(new G4RadioactiveDecayPhysics());
-    RegisterPhysics(new G4EmExtraPhysics());
-    RegisterPhysics(new G4EmLivermorePhysics());
+    // RegisterPhysics(new G4EmExtraPhysics());
     RegisterPhysics(new G4IonBinaryCascadePhysics());
     RegisterPhysics(new G4HadronPhysicsQGSP_BIC_HP());
     RegisterPhysics(new G4HadronElasticPhysicsHP());
@@ -66,6 +65,9 @@ PhysicsList::PhysicsList() : G4VModularPhysicsList() {
 
     // Neutron tracking cut
     RegisterPhysics(new G4NeutronTrackingCut());
+
+    // RegisterPhysics(new G4EmLivermorePhysics());
+    RegisterPhysics(new G4EmStandardPhysics_option4());
 }
 
 void PhysicsList::ConstructProcess() {

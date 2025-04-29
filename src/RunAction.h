@@ -1,4 +1,3 @@
-
 #pragma once
 
 #include <G4RunManager.hh>
@@ -12,15 +11,15 @@ class RunAction : public G4UserRunAction {
 public:
     RunAction();
 
-    void BeginOfRunAction(const G4Run *) override;
+    void BeginOfRunAction(const G4Run*) override;
 
-    void EndOfRunAction(const G4Run *) override;
+    void EndOfRunAction(const G4Run*) override;
 
-    static void InsertTrack(const G4Track *track);
+    static void InsertTrack(const G4Track* track);
 
-    static void SetInputParticle(const std::string &particleName);
+    static void SetInputParticle(const std::string& particleName);
 
-    static void SetOutputFilename(const std::string &outputFilename);
+    static void SetOutputFilename(const std::string& outputFilename);
 
     static void SetRequestedPrimaries(int);
 
@@ -30,7 +29,11 @@ public:
 
     static int GetRequestedSecondaries();
 
-    static void IncreaseLaunchedPrimaries(const std::string &);
+    static void IncreaseLaunchedPrimaries(const std::string&);
+
+    static double GetDepth() { return depth; }
+
+    static void SetDepth(double depth);
 
     static unsigned int GetLaunchedPrimaries(bool lock = true);
 
@@ -41,6 +44,7 @@ public:
 private:
     static int requestedPrimaries;
     static int requestedSecondaries;
+    static thread_local double depth;
 
     static std::map<std::string, double> launchedPrimariesMap;
 
@@ -51,25 +55,29 @@ private:
     static std::mutex outputMutex;
 
     static std::string inputParticleName;
-    static TFile *outputFile;
+    static TFile* outputFile;
 
-    static TH1D *electronsMinusEnergy;
-    static TH1D *electronsPlusEnergy;
-    static TH1D *gammasEnergy;
-    static TH1D *alphasEnergy;
-    static TH1D *neutronsEnergy;
+    static TH1D* electronsMinusEnergy;
+    static TH1D* electronsPlusEnergy;
+    static TH1D* gammasEnergy;
+    static TH1D* alphasEnergy;
+    static TH1D* neutronsEnergy;
 
-    static TH1D *electronsMinusZenith;
-    static TH1D *electronsPlusZenith;
-    static TH1D *gammasZenith;
-    static TH1D *alphasZenith;
-    static TH1D *neutronsZenith;
+    static TH1D* electronsMinusZenith;
+    static TH1D* electronsPlusZenith;
+    static TH1D* gammasZenith;
+    static TH1D* alphasZenith;
+    static TH1D* neutronsZenith;
 
-    static TH2D *electronsMinusEnergyZenith;
-    static TH2D *electronsPlusEnergyZenith;
-    static TH2D *gammasEnergyZenith;
-    static TH2D *alphasEnergyZenith;
-    static TH2D *neutronsEnergyZenith;
+    static TH2D* electronsMinusEnergyZenith;
+    static TH2D* electronsPlusEnergyZenith;
+    static TH2D* gammasEnergyZenith;
+    static TH2D* alphasEnergyZenith;
+    static TH2D* neutronsEnergyZenith;
+
+    static TH1D* electronsMinusDepht;
+    static TH1D* electronsPlusDepht;
+    static TH1D* gammasDepht;
+    static TH1D* alphasDepht;
+    static TH1D* neutronsDepht;
 };
-
-
