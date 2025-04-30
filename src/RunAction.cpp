@@ -200,8 +200,9 @@ void RunAction::EndOfRunAction(const G4Run *) {
     const auto launchedParticles = GetLaunchedPrimaries(false);
     const auto detectorThickness = DetectorConstruction::GetThickness();
 
-    // const auto scale = 1.0 ; //
     const auto scale = 1.0 * detectorThickness / launchedParticles / energyWidth;
+    // print the scale with many decimal places
+    G4cout << "Scale factor: " << scale << G4endl;
 
     electronsMinusEnergy->Scale(scale);
     electronsPlusEnergy->Scale(scale);
