@@ -14,19 +14,23 @@ jobs:
         uses: conda-incubator/setup-miniconda@v3
         with:
           auto-update-conda: true
-          python-version: "3.8"
-          miniforge-variant: Mambaforge
-          use-mamba: true
+          python-version: "3.12"
+          mamba-version: "*"
+          channels: conda-forge,defaults
+          channel-priority: true
 
       - name: Install ROOT
+        shell: bash -el {0}
         run: |
           mamba install root
 
       - name: Install Geant4
+        shell: bash -el {0}
         run: |
           mamba install geant4
 
       - name: Build
+        shell: bash -el {0}
         run: |
           mkdir build
           cd build
