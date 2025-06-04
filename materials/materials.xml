@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<materials>
+
+    <material name="Concrete" state="solid">
+      <D value="2.3" unit="g/cm3"/>
+      <component material="G4_H" fraction="0.010000"/>
+      <component material="G4_C" fraction="0.001000"/>
+      <component material="G4_O" fraction="0.529107"/>
+      <component material="G4_Na" fraction="0.016000"/>
+      <component material="G4_Mg" fraction="0.002000"/>
+      <component material="G4_Al" fraction="0.033872"/>
+      <component material="G4_Si" fraction="0.337021" />
+      <component material="G4_K" fraction="0.013000"/>
+      <component material="G4_Ca" fraction="0.044000"/>
+      <component material="G4_Fe" fraction="0.014000"/>
+   </material>
+   
+    <material name="BorosilicateGlass" state="solid">
+        <D value="2.3" unit="g/cm3"/>
+        <component material="G4_SILICON_DIOXIDE" fraction="0.70"/>
+        <component material="G4_ALUMINUM_OXIDE" fraction="0.20"/>
+        <component material="G4_BORON_OXIDE" fraction="0.10"/>
+    </material>
+</materials>

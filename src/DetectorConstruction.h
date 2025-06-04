@@ -9,6 +9,11 @@
 #include <G4VUserDetectorConstruction.hh>
 #include <G4VisAttributes.hh>
 #include <globals.hh>
+#include <TXMLEngine.h>
+
+#include <vector>
+#include <string>
+#include <map>
 
 
 class DetectorConstruction : public G4VUserDetectorConstruction {
@@ -30,6 +35,11 @@ private:
     const std::vector<std::pair<std::string, double>> configuration;
 
     double totalThickness = 0;
+
+    std::map<std::string, G4Material*> customMaterials;
+
+    void LoadCustomMaterialsFromXML(const std::string& filename);
+    G4Material* GetMaterialOrCustom(const std::string& name);
 };
 
 
