@@ -2,6 +2,14 @@ name: Build and Test
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - main
+  pull_request:
+
+defaults:
+  run:
+    shell: bash -el {0}
 
 jobs:
   build:
@@ -20,19 +28,21 @@ jobs:
           channel-priority: true
 
       - name: Install ROOT
-        shell: bash -el {0}
         run: |
           mamba install root
 
       - name: Install Geant4
-        shell: bash -el {0}
         run: |
           mamba install geant4
 
       - name: Build
-        shell: bash -el {0}
         run: |
           mkdir build
           cd build
           cmake ..
           make
+
+      - name: Help menu
+        run: |
+          cd build
+          ./radiation-decay-secondaries --help
