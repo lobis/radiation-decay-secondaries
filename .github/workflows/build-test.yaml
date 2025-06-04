@@ -2,6 +2,14 @@ name: Build and Test
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - main
+  pull_request:
+
+defaults:
+  run:
+    shell: bash -el {0}
 
 jobs:
   build:
@@ -14,9 +22,10 @@ jobs:
         uses: conda-incubator/setup-miniconda@v3
         with:
           auto-update-conda: true
-          python-version: "3.8"
-          miniforge-variant: Mambaforge
-          use-mamba: true
+          python-version: "3.12"
+          mamba-version: "*"
+          channels: conda-forge,defaults
+          channel-priority: true
 
       - name: Install ROOT
         run: |
@@ -32,3 +41,8 @@ jobs:
           cd build
           cmake ..
           make
+
+      - name: Help menu
+        run: |
+          cd build
+          ./radiation-decay-secondaries --help
